@@ -1,0 +1,50 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import random
+import time
+
+# Simulate real-time traffic data
+def generate_traffic_data(num_records=100):
+    data = []
+    for _ in range(num_records):
+        record = {
+            'timestamp': pd.Timestamp.now(),
+            'location': random.choice(['Junction A', 'Junction B', 'Junction C']),
+            'vehicle_count': random.randint(10, 100),
+            'average_speed': random.uniform(20, 80),  # km/h
+            'incident': random.choice([None, 'Accident', 'Roadblock', 'Heavy Rain'])
+        }
+        data.append(record)
+        time.sleep(0.1)  # Simulate streaming delay
+    return pd.DataFrame(data)
+
+# Analyze traffic congestion
+def analyze_congestion(df):
+    congestion_threshold = 60  # vehicles
+    df['congestion'] = df['vehicle_count'] > congestion_threshold
+    return df
+
+# Visualize traffic data
+def visualize_traffic(df):
+    plt.figure(figsize=(10, 6))
+    for location in df['location'].unique():
+        subset = df[df['location'] == location]
+        plt.plot(subset['timestamp'], subset['vehicle_count'], label=location)
+    plt.xlabel('Time')
+    plt.ylabel('Vehicle Count')
+    plt.title('Real-Time Traffic Monitoring')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+# Main function
+def traffic_management_system():
+    print("🚗 Starting Traffic Data Simulation...")
+    traffic_df = generate_traffic_data()
+    traffic_df = analyze_congestion(traffic_df)
+    print("📊 Congestion Analysis Complete.")
+    print(traffic_df[['timestamp', 'location', 'vehicle_count', 'congestion', 'incident']].tail())
+    visualize_traffic(traffic_df)
+
+# Run the system
+traffic_management_system()
